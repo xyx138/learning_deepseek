@@ -32,6 +32,16 @@
 ![image-20250315114744816](https://raw.githubusercontent.com/xyx138/cloudimg/master/img/image-20250315114744816.png)
 
 
+### 加快推理
+
+一般的推理过程，每次生成新token的时候，会重复计算之前已经计算过的权重，同时重复生成k,v矩阵。kv_cache主要做两件事：
+
+1. 计算权重只计算当前token的q向量与之前所有token的k向量的乘积
+2. 缓存下来之前算好的k向量和v向量
+
+![kv_cache](https://raw.githubusercontent.com/xyx138/cloudimg/master/img/kv_cache.jpg)
+
+
 ## GRPO
 
 1. 第一版
