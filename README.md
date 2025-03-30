@@ -31,8 +31,11 @@
 
 ![image-20250315114744816](https://raw.githubusercontent.com/xyx138/cloudimg/master/img/image-20250315114744816.png)
 
+---
 
-### 加快推理
+
+
+### KV_cache
 
 一般的推理过程，每次生成新token的时候，会重复计算之前已经计算过的权重，同时重复生成k,v矩阵。kv_cache主要做两件事：
 
@@ -40,6 +43,9 @@
 2. 缓存下来之前算好的k向量和v向量
 
 ![kv_cache](https://raw.githubusercontent.com/xyx138/cloudimg/master/img/kv_cache.jpg)
+
+---
+
 
 
 ## GRPO
@@ -96,6 +102,8 @@
 
 ![image-20250319204555428](https://raw.githubusercontent.com/xyx138/cloudimg/master/img/image-20250319204555428.png)
 
+---
+
 
 
 ## Rope
@@ -104,7 +112,7 @@
 
 
 
-## 为什么需要位置编码
+### 为什么需要位置编码
 
 Transformer架构的核心就是attention机制，而attention中的重点就是计算注意力分score，即Q K 矩阵的点积过程。我们可以很容易发现，改变token的顺序，并不会影响score的值，下面的代码可以快速验证这个过程：
 
@@ -148,7 +156,7 @@ attn_x, attn_y
 
 
 
-## 相对位置编码
+### 相对位置编码
 
 现在假设有两token：$token_m, token_n$  ，通过函数 $f(token)$将位置信息加入到向量中，简写形式$f(m)$表示将 $token_m$ 加入位置信息m
 
@@ -211,3 +219,22 @@ $$
 
 [旋转位置编码RoPE的简单理解](https://www.bilibili.com/video/BV1CQoaY2EU2/?spm_id_from=333.337.search-card.all.click&vd_source=3a7313311adb0ce174176d9069af5bd0)
 
+
+
+---
+
+
+
+## MLA
+
+MLA的提出能够很好的缓解kv_cache对显存的占用，总体来说，通过类似lora的低秩变换将输入向量映射到一个较小的维度，再通过矩阵吸收，只缓存这些具有较小维度的向量。
+
+下面的公式具体的解释了mla的整个过程：
+
+![](./image/mla公式.png)
+
+我用MLA替换了之前手写的gpt模型中的MHA，并在包含约50w条样本的数据集上做自回归预训练，结果如下：
+
+![image-20250330232910667](./image/train_mla_loss_3_30.png)
+
+模型在500step的时候就已经收敛。
