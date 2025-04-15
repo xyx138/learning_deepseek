@@ -233,8 +233,3 @@ MLA的提出能够很好的缓解kv_cache对显存的占用，总体来说，通
 
 ![mla](./image/mla_formula.png)
 
-我用MLA替换了之前手写的gpt模型中的MHA，并在包含约50w条样本的数据集上做自回归预训练，结果如下：
-
-![image-20250330232910667](./image/train_mla_loss_3_30.png)
-
-模型在500step的时候就已经收敛。
